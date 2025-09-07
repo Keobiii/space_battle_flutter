@@ -5,6 +5,7 @@ import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame/effects.dart';
 import 'package:flutter/material.dart';
+import 'package:space_battle/components/explosion.dart';
 import 'package:space_battle/my_game.dart';
 
 class Asteriod extends SpriteComponent with HasGameReference<MyGame> { 
@@ -83,6 +84,7 @@ class Asteriod extends SpriteComponent with HasGameReference<MyGame> {
 
     if (_health <= 0) {
       removeFromParent();
+      _createExplosion();
     } else {
       _flashWhite();
       _applyKnockback();
@@ -125,5 +127,15 @@ class Asteriod extends SpriteComponent with HasGameReference<MyGame> {
     _velocity.setFrom(_originalVelocity);
 
     _isKnockedback = false;
+  }
+
+  void _createExplosion() {
+    final Explosion explosion = Explosion(
+      position: position.clone(),
+      explosionSize: size.x,
+      explosionType: ExplosionType.dust
+    );
+
+    game.add(explosion);
   }
 }
