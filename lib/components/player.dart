@@ -6,7 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:space_battle/components/laser.dart';
 import 'package:space_battle/my_game.dart';
 
-class Player extends SpriteComponent with HasGameReference<MyGame>, KeyboardHandler{
+class Player extends SpriteAnimationComponent with HasGameReference<MyGame>, KeyboardHandler{
   bool _isShooting = true;
   final double _fireCooldown = 0.2;
   double _elapsedFireTime = 0.0;
@@ -15,7 +15,9 @@ class Player extends SpriteComponent with HasGameReference<MyGame>, KeyboardHand
   @override
   FutureOr<void> onLoad() async{
     // TODO: implement onLoad
-    sprite = await game.loadSprite('player_blue_on0.png');
+    // sprite = await game.loadSprite('player_blue_on0.png');
+
+    animation = await _loadAnimation();
 
     // resize the player
     size *= 0.3;
@@ -53,6 +55,17 @@ class Player extends SpriteComponent with HasGameReference<MyGame>, KeyboardHand
     }
 
     super.update(dt);
+  }
+
+  Future<SpriteAnimation> _loadAnimation() async {
+    return SpriteAnimation.spriteList(
+      [
+        await game.loadSprite('player_blue_on0.png'),
+        await game.loadSprite('player_blue_on1.png'),
+      ],
+      stepTime: 0.1,
+      loop: true
+    );
   }
 
   // set screen boundaries for the player
