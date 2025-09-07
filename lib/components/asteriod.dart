@@ -3,15 +3,19 @@ import 'dart:math';
 
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
+import 'package:flame/effects.dart';
+import 'package:flutter/material.dart';
 import 'package:space_battle/my_game.dart';
 
 class Asteriod extends SpriteComponent with HasGameReference<MyGame> { 
   final Random _random = Random();
   static const double _maxSize = 120;
   late Vector2 _velocity;
+  final Vector2 _originalVelocity = Vector2.zero();
   late double _spinSpeed;
   final double _maxHalth = 3;
   late double _health;
+  bool _isKnockedback = false;
 
   Asteriod({ 
     required super.position,
@@ -22,6 +26,7 @@ class Asteriod extends SpriteComponent with HasGameReference<MyGame> {
     priority: -1
   ) {
     _velocity = _generateVelocity();
+    _originalVelocity.setFrom(_velocity);
     _spinSpeed = (_random.nextDouble() * 1.5 - 0.75); 
     _health = size / _maxSize * _maxHalth;
 
@@ -78,6 +83,47 @@ class Asteriod extends SpriteComponent with HasGameReference<MyGame> {
 
     if (_health <= 0) {
       removeFromParent();
+    } else {
+      _flashWhite();
+      _applyKnockback();
     }
+  }
+
+  // effects when the asteriod is hitted
+  void _flashWhite() {
+    final ColorEffect flashEffect = ColorEffect(
+      const Color.fromRGBO(255, 255, 255, 1.0),
+      EffectController(
+        duration: 0.1,
+        alternate: true,
+        curve: Curves.easeInOut
+      ),
+    );
+
+    add(flashEffect);
+  }
+
+  // effects when the asteriod is destroyed
+  void _applyKnockback() {
+    if(_isKnockedback) return;
+
+    _isKnockedback = true;
+    _velocity.setZero();
+
+    final MoveByEffect knockbackEffect = MoveByEffect(
+      Vector2(0, -20), 
+      EffectController(
+        duration: 0.1,
+      ),
+      onComplete: _restoreVelocity
+    );
+
+    add(knockbackEffect);
+  }
+
+  void _restoreVelocity() {
+    _velocity.setFrom(_originalVelocity);
+
+    _isKnockedback = false;
   }
 }
