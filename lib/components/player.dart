@@ -1,16 +1,33 @@
 import 'dart:async';
+import 'dart:math';
 
+import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
+import 'package:flame/effects.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import 'package:space_battle/components/asteriod.dart';
+import 'package:space_battle/components/explosion.dart';
 import 'package:space_battle/components/laser.dart';
 import 'package:space_battle/my_game.dart';
 
-class Player extends SpriteAnimationComponent with HasGameReference<MyGame>, KeyboardHandler{
+class Player extends SpriteAnimationComponent with HasGameReference<MyGame>, KeyboardHandler, CollisionCallbacks{
   bool _isShooting = true;
   final double _fireCooldown = 0.2;
   double _elapsedFireTime = 0.0;
   final Vector2 _keyboardMovement = Vector2.zero();
+  bool _isDestroyed = false;
+  final Random _random = Random();
+  late Timer _explosionTimer;
+
+  Player() {
+    _explosionTimer =Timer(
+      0.1, 
+      onTick: _createRandomExplosion,
+      repeat: true,
+      autoStart: false
+    );
+  }
 
   @override
   FutureOr<void> onLoad() async{
@@ -22,6 +39,13 @@ class Player extends SpriteAnimationComponent with HasGameReference<MyGame>, Key
     // resize the player
     size *= 0.3;
 
+    // hitbox for player
+    add(RectangleHitbox.relative(
+      Vector2(0.6, 0.9), 
+      parentSize: size,
+      anchor: Anchor.center
+    ));
+
     return super.onLoad();
   }
 
@@ -29,6 +53,12 @@ class Player extends SpriteAnimationComponent with HasGameReference<MyGame>, Key
   @override
   void update(double dt) {
     // TODO: implement update
+
+    if(_isDestroyed) {
+      _explosionTimer.update(dt);
+      return;
+    }
+
     // handle the movement of the player
     // base on the computer/device complexity using dt
     // position.y -= 200 * dt;
@@ -101,6 +131,69 @@ class Player extends SpriteAnimationComponent with HasGameReference<MyGame>, Key
         position: position.clone() + Vector2(0, -size.y / 2),
       )
     );
+  }
+
+  // player destruction
+  void _handleDestruction() async {
+    animation = SpriteAnimation.spriteList(
+      [
+        await game.loadSprite('player_blue_off.png'),
+      ], 
+      stepTime: double.infinity
+    );
+
+    add(ColorEffect(
+      const Color.fromRGBO(255, 255, 255, 1.0), 
+      EffectController(duration: 0.0),
+      )
+    );
+
+    add(OpacityEffect.fadeOut(
+      EffectController(duration: 3.0),
+      onComplete: () => _explosionTimer.stop()
+    ));
+
+    add(MoveEffect.by(
+      Vector2(0, 200), 
+      EffectController(duration: 3.0)
+    ));
+
+    add(RemoveEffect(delay: 4.0));
+
+    _isDestroyed = true;
+
+    _explosionTimer.start();
+  }
+
+  void _createRandomExplosion() {
+    final Vector2 explosionPosition = Vector2(
+      position.x - size.x / 2 + _random.nextDouble() * size.x,
+      position.y - size.y / 2 + _random.nextDouble() * size.y
+    );
+
+    final ExplosionType explosionType = _random.nextBool()
+        ? ExplosionType.smoke
+        : ExplosionType.fire;
+
+    final Explosion explosion = Explosion(
+      position: explosionPosition, 
+      explosionSize: size.x * 0.7, 
+      explosionType: explosionType
+    );
+
+    game.add(explosion);
+  }
+
+  @override
+  void onCollision(Set<Vector2> intersectionPoints, PositionComponent other) {
+    // TODO: implement onCollision
+    super.onCollision(intersectionPoints, other);
+
+    if (_isDestroyed) return;
+
+    if(other is Asteriod) {
+      _handleDestruction();
+    }
   }
 
   @override

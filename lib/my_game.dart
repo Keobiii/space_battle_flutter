@@ -28,6 +28,8 @@ class MyGame extends FlameGame with HasKeyboardHandlerComponents, HasCollisionDe
     await Flame.device.fullScreen();
     await Flame.device.setPortrait();
 
+    debugMode = true;
+
     startGame();
 
     return super.onLoad();
