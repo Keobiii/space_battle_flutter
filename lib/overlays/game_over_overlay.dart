@@ -30,6 +30,11 @@ class _GameOverOverlayState extends State<GameOverOverlay> {
   @override
   Widget build(BuildContext context) {
     return AnimatedOpacity(
+      onEnd: () {
+        if (_opacity == 0.0) {
+          widget.game.overlays.remove('GameOver');
+        }
+      },
       opacity: _opacity,
       duration: const Duration(milliseconds: 500),
       child: Container(
@@ -49,7 +54,10 @@ class _GameOverOverlayState extends State<GameOverOverlay> {
             const SizedBox(height: 30,),
             TextButton(
               onPressed: () {
-      
+                widget.game.restartGame();
+                setState(() {
+                  _opacity = 0.0;
+                });
               }, 
               style: TextButton.styleFrom(
                 padding: const EdgeInsets.symmetric(

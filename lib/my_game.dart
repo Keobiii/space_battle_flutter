@@ -173,4 +173,26 @@ class MyGame extends FlameGame with HasKeyboardHandlerComponents, HasCollisionDe
     overlays.add('GameOver');
     pauseEngine();
   }
+
+  void restartGame() {
+    // remove asteroids and pickups
+    children.whereType<PositionComponent>().forEach((component) {
+      if (component is Asteriod || component is Pickup) {
+        remove(component);
+      }
+    });
+
+    _asteroidSpawner.timer.start();
+    _pickupSpawner.timer.start();
+
+    // reset the score
+    _score = 0;
+    _scoreDisplay.text = '0';
+
+
+    // create new player
+    _createPlayer();
+
+    resumeEngine();
+  }
 }
