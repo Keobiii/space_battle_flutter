@@ -85,6 +85,7 @@ class Asteriod extends SpriteComponent with HasGameReference<MyGame> {
     if (_health <= 0) {
       removeFromParent();
       _createExplosion();
+      _splitAsteriod();
     } else {
       _flashWhite();
       _applyKnockback();
@@ -137,5 +138,18 @@ class Asteriod extends SpriteComponent with HasGameReference<MyGame> {
     );
 
     game.add(explosion);
+  }
+
+  void _splitAsteriod() {
+    if (size.x <= _maxSize / 3) return;
+
+    for (int i  = 0; i < 3; i++) {
+      final Asteriod fragment = Asteriod(
+        position: position.clone(), 
+        size: size.x - _maxSize / 3
+      );
+      game.add(fragment);
+      
+    }
   }
 }

@@ -7,7 +7,7 @@ import 'package:space_battle/components/laser.dart';
 import 'package:space_battle/my_game.dart';
 
 class Player extends SpriteComponent with HasGameReference<MyGame>, KeyboardHandler{
-  bool _isShooting = false;
+  bool _isShooting = true;
   final double _fireCooldown = 0.2;
   double _elapsedFireTime = 0.0;
   final Vector2 _keyboardMovement = Vector2.zero();
