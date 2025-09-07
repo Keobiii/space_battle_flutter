@@ -7,6 +7,8 @@ import 'package:space_battle/my_game.dart';
 
 class Player extends SpriteComponent with HasGameReference<MyGame>{
   bool _isShooting = false;
+  final double _fireCooldown = 0.2;
+  double _elapsedFireTime = 0.0;
 
   @override
   FutureOr<void> onLoad() async{
@@ -36,8 +38,11 @@ class Player extends SpriteComponent with HasGameReference<MyGame>{
     _handleScreenBounds();
 
     // perform shooting if the player is shooting
-    if (_isShooting) {
+    // add delay for the shooting
+    _elapsedFireTime += dt;
+    if (_isShooting && _elapsedFireTime >= _fireCooldown ) {
       _fireLaser();
+      _elapsedFireTime = 0.0;
     
     }
 
