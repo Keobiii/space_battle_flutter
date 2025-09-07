@@ -71,10 +71,11 @@ class _TitleOverlayState extends State<TitleOverlay> {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 30),
+                  padding: const EdgeInsets.only(left: 30, right: 30, top: 30, ),
                   child: SizedBox(
                     width: 100,
-                    child: Image.asset('assets/images/player_${playerColor}_off.png'),
+                    child: Image.asset('assets/images/player_${playerColor}_off.png',
+                    gaplessPlayback: true,),
                   ),
                 ),
                 GestureDetector(
