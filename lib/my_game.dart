@@ -13,6 +13,7 @@ import 'package:space_battle/components/pickup.dart';
 import 'package:space_battle/components/player.dart';
 import 'package:space_battle/components/shoot_button.dart';
 import 'package:flutter/material.dart';
+import 'package:space_battle/components/stars.dart';
 
 class MyGame extends FlameGame with HasKeyboardHandlerComponents, HasCollisionDetection{
   late Player player;
@@ -30,7 +31,9 @@ class MyGame extends FlameGame with HasKeyboardHandlerComponents, HasCollisionDe
     await Flame.device.fullScreen();
     await Flame.device.setPortrait();
 
-    debugMode = true;
+    _createStars();
+
+    // debugMode = true;
 
     startGame();
 
@@ -105,8 +108,8 @@ class MyGame extends FlameGame with HasKeyboardHandlerComponents, HasCollisionDe
         position: _generateSpawnPosition(),
         pickupType: PickupType.values[_random.nextInt(PickupType.values.length)]
       ),
-      minPeriod: 0.7,
-      maxPeriod: 1.2,
+      minPeriod: 5.0,
+      maxPeriod: 10.0,
       selfPositioning: true,
     );
     add(_pickupSpawner);
@@ -158,5 +161,11 @@ class MyGame extends FlameGame with HasKeyboardHandlerComponents, HasCollisionDe
     );
 
     _scoreDisplay.add(popEffect);
+  }
+
+  void _createStars() {
+    for(int i = 0; i < 50; i++) {
+      add(Stars()..priority = -10);
+    }
   }
 }
