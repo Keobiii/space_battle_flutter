@@ -35,7 +35,7 @@ class MyGame extends FlameGame with HasKeyboardHandlerComponents, HasCollisionDe
 
     // debugMode = true;
 
-    startGame();
+    // startGame();
 
     return super.onLoad();
   }
@@ -192,6 +192,23 @@ class MyGame extends FlameGame with HasKeyboardHandlerComponents, HasCollisionDe
 
     // create new player
     _createPlayer();
+
+    resumeEngine();
+  }
+
+  void quitGame() {
+    // go back with the title and remove everything
+    children.whereType<PositionComponent>().forEach((component) {
+      if (component is! Stars) {
+        remove(component);
+      }
+    });
+
+    remove(_asteroidSpawner);
+    remove(_pickupSpawner);
+
+    // show title overlay
+    overlays.add('Title');
 
     resumeEngine();
   }

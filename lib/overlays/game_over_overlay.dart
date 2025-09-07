@@ -80,7 +80,10 @@ class _GameOverOverlayState extends State<GameOverOverlay> {
             const SizedBox(height: 15,),
             TextButton(
               onPressed: () {
-      
+                widget.game.quitGame();
+                setState(() {
+                  _opacity = 0.0;
+                });
               }, 
               style: TextButton.styleFrom(
                 padding: const EdgeInsets.symmetric(
