@@ -8,12 +8,14 @@ import 'package:flame/game.dart';
 import 'package:flame/particles.dart';
 import 'package:space_battle/components/asteriod.dart';
 import 'package:space_battle/components/player.dart';
+import 'package:space_battle/components/shoot_button.dart';
 
 class MyGame extends FlameGame {
   late Player player;
   late JoystickComponent joystick;
   late SpawnComponent _asteroidSpawner;
   final Random _random = Random();
+  late ShootButton _shootButton;
 
   @override
   FutureOr<void> onLoad() async {
@@ -33,14 +35,15 @@ class MyGame extends FlameGame {
 
   void startGame() async {
     await _createJoystick();
-    _createPlayer();
+    await _createPlayer();
+    _createShootButton();
     _createAsteroidSpawner();
 
     // manually create an asteriod
     // add(Asteriod(position: Vector2(200, 0)));
   }
 
-  void _createPlayer() {
+  Future<void> _createPlayer() async{
     player = Player()
       // set the placement of the player
       ..anchor = Anchor.center
@@ -64,6 +67,15 @@ class MyGame extends FlameGame {
       priority: 0,
     );
     add(joystick);
+  }
+
+  void _createShootButton() {
+    _shootButton = ShootButton()
+    ..anchor = Anchor.bottomRight
+    ..position = Vector2(size.x - 20, size.y - 20)
+    ..priority = 10;
+
+    add(_shootButton);
   }
 
   void _createAsteroidSpawner() {
