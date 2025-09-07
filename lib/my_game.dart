@@ -168,4 +168,9 @@ class MyGame extends FlameGame with HasKeyboardHandlerComponents, HasCollisionDe
       add(Stars()..priority = -10);
     }
   }
+
+  void gameOver() {
+    overlays.add('GameOver');
+    pauseEngine();
+  }
 }

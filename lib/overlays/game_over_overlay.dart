@@ -1,0 +1,99 @@
+import 'package:flutter/material.dart';
+import 'package:space_battle/my_game.dart';
+
+class GameOverOverlay extends StatefulWidget {
+  final MyGame game;
+  const GameOverOverlay({super.key, required this.game});
+
+  @override
+  State<GameOverOverlay> createState() => _GameOverOverlayState();
+}
+
+class _GameOverOverlayState extends State<GameOverOverlay> {
+  double _opacity = 0.0;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    Future.delayed(
+      const Duration(milliseconds: 0),
+      () {
+        setState(() {
+          _opacity = 1.0;
+        });
+      }
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedOpacity(
+      opacity: _opacity,
+      duration: const Duration(milliseconds: 500),
+      child: Container(
+        color: Colors.black.withAlpha(150),
+        alignment: Alignment.center,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Text(
+              'GAME OVER',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 48,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 30,),
+            TextButton(
+              onPressed: () {
+      
+              }, 
+              style: TextButton.styleFrom(
+                padding: const EdgeInsets.symmetric(
+                  vertical: 10,
+                  horizontal: 25
+                ),
+                backgroundColor: Colors.blue,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadiusGeometry.circular(50)
+                )
+              ),
+              child: Text(
+                'PLAY AGAIN',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 28
+                ),
+              )
+            ),
+            const SizedBox(height: 15,),
+            TextButton(
+              onPressed: () {
+      
+              }, 
+              style: TextButton.styleFrom(
+                padding: const EdgeInsets.symmetric(
+                  vertical: 10,
+                  horizontal: 25
+                ),
+                backgroundColor: Colors.blue,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadiusGeometry.circular(50)
+                )
+              ),
+              child: Text(
+                'QUIT GAME',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 28
+                ),
+              )
+            ),        ],
+        ),
+      ),
+    );
+  }
+}

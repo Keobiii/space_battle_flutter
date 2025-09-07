@@ -187,7 +187,10 @@ class Player extends SpriteAnimationComponent with HasGameReference<MyGame>, Key
       EffectController(duration: 3.0)
     ));
 
-    add(RemoveEffect(delay: 4.0));
+    add(RemoveEffect(
+      delay: 4.0, 
+      onComplete: game.gameOver,
+    ));
 
     _isDestroyed = true;
 
