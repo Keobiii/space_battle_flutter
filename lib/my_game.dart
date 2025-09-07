@@ -11,7 +11,7 @@ import 'package:space_battle/components/asteriod.dart';
 import 'package:space_battle/components/player.dart';
 import 'package:space_battle/components/shoot_button.dart';
 
-class MyGame extends FlameGame with HasKeyboardHandlerComponents{
+class MyGame extends FlameGame with HasKeyboardHandlerComponents, HasCollisionDetection{
   late Player player;
   late JoystickComponent joystick;
   late SpawnComponent _asteroidSpawner;

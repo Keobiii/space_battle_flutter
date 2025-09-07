@@ -1,9 +1,11 @@
 import 'dart:async';
 
+import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
+import 'package:space_battle/components/asteriod.dart';
 import 'package:space_battle/my_game.dart';
 
-class Laser extends SpriteComponent with HasGameReference<MyGame> {
+class Laser extends SpriteComponent with HasGameReference<MyGame>, CollisionCallbacks {
   Laser({
     required super.position,
   }) : super (
@@ -16,7 +18,11 @@ class Laser extends SpriteComponent with HasGameReference<MyGame> {
     // TODO: implement onLoad
     sprite = await game.loadSprite('laser.png');
 
-    size *= 0.5;
+    size *= 0.25;
+
+    add(RectangleHitbox(
+
+    ));
 
     return super.onLoad();
   }
@@ -32,5 +38,16 @@ class Laser extends SpriteComponent with HasGameReference<MyGame> {
     }
 
     super.update(dt);
+  }
+
+  @override
+  void onCollision(Set<Vector2> intersectionPoints, PositionComponent other) {
+    // TODO: implement onCollision
+    super.onCollision(intersectionPoints, other);
+
+    if(other is Asteriod) {
+      removeFromParent();
+      other.removeFromParent();
+    }
   }
 }
