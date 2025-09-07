@@ -10,6 +10,7 @@ import 'package:space_battle/components/asteriod.dart';
 import 'package:space_battle/components/explosion.dart';
 import 'package:space_battle/components/laser.dart';
 import 'package:space_battle/components/pickup.dart';
+import 'package:space_battle/components/shield.dart';
 import 'package:space_battle/my_game.dart';
 
 class Player extends SpriteAnimationComponent with HasGameReference<MyGame>, KeyboardHandler, CollisionCallbacks{
@@ -21,6 +22,7 @@ class Player extends SpriteAnimationComponent with HasGameReference<MyGame>, Key
   final Random _random = Random();
   late Timer _explosionTimer;
   late Timer _laserPowerupTimer;
+  Shield? activeShield;
 
   Player() {
     _explosionTimer =Timer(
@@ -218,7 +220,7 @@ class Player extends SpriteAnimationComponent with HasGameReference<MyGame>, Key
     if (_isDestroyed) return;
 
     if(other is Asteriod) {
-      _handleDestruction();
+      if (activeShield == null)  _handleDestruction();
     } else if (other is Pickup) {
       other.removeFromParent();
       game.incrementScore(1);
@@ -231,6 +233,12 @@ class Player extends SpriteAnimationComponent with HasGameReference<MyGame>, Key
         case PickupType.bomb:
           break;
         case PickupType.shield:
+          if(activeShield != null) {
+            remove(activeShield!);
+          }
+
+          activeShield = Shield();
+          add(activeShield!);
           break;
       }
     }
