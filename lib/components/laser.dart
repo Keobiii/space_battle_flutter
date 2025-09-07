@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
@@ -8,6 +9,7 @@ import 'package:space_battle/my_game.dart';
 class Laser extends SpriteComponent with HasGameReference<MyGame>, CollisionCallbacks {
   Laser({
     required super.position,
+    super.angle = 0.0
   }) : super (
     anchor: Anchor.center,
     priority: - 1,
@@ -30,7 +32,9 @@ class Laser extends SpriteComponent with HasGameReference<MyGame>, CollisionCall
   @override
   void update(double dt) {
     // TODO: implement update
-    position.y -= 500 * dt;
+    // position.y -= 500 * dt;
+
+    position += Vector2(sin(angle), -cos(angle)) * 500 * dt;
 
     // rmeove the laser when it goes out of the screen
     if (position.y < -size.y / 2) {

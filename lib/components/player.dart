@@ -9,6 +9,7 @@ import 'package:flutter/services.dart';
 import 'package:space_battle/components/asteriod.dart';
 import 'package:space_battle/components/explosion.dart';
 import 'package:space_battle/components/laser.dart';
+import 'package:space_battle/components/pickup.dart';
 import 'package:space_battle/my_game.dart';
 
 class Player extends SpriteAnimationComponent with HasGameReference<MyGame>, KeyboardHandler, CollisionCallbacks{
@@ -19,12 +20,18 @@ class Player extends SpriteAnimationComponent with HasGameReference<MyGame>, Key
   bool _isDestroyed = false;
   final Random _random = Random();
   late Timer _explosionTimer;
+  late Timer _laserPowerupTimer;
 
   Player() {
     _explosionTimer =Timer(
       0.1, 
       onTick: _createRandomExplosion,
       repeat: true,
+      autoStart: false
+    );
+
+    _laserPowerupTimer = Timer(
+      10.0,
       autoStart: false
     );
   }
@@ -57,6 +64,10 @@ class Player extends SpriteAnimationComponent with HasGameReference<MyGame>, Key
     if(_isDestroyed) {
       _explosionTimer.update(dt);
       return;
+    }
+
+    if (_laserPowerupTimer.isRunning()) {
+      _laserPowerupTimer.update(dt);
     }
 
     // handle the movement of the player
@@ -131,6 +142,21 @@ class Player extends SpriteAnimationComponent with HasGameReference<MyGame>, Key
         position: position.clone() + Vector2(0, -size.y / 2),
       )
     );
+
+    if (_laserPowerupTimer.isRunning()) {
+      game.add(
+        Laser(
+          position: position.clone() + Vector2(0, -size.y / 2),
+          angle: 15 * degrees2Radians,
+        )
+      );
+      game.add(
+        Laser(
+          position: position.clone() + Vector2(0, -size.y / 2),
+          angle: -15 * degrees2Radians,
+        )
+      );
+    }
   }
 
   // player destruction
@@ -193,6 +219,20 @@ class Player extends SpriteAnimationComponent with HasGameReference<MyGame>, Key
 
     if(other is Asteriod) {
       _handleDestruction();
+    } else if (other is Pickup) {
+      other.removeFromParent();
+      game.incrementScore(1);
+
+      // check which type of pickup is
+      switch (other.pickupType) {
+        case PickupType.laser:
+          _laserPowerupTimer.start();
+          break;
+        case PickupType.bomb:
+          break;
+        case PickupType.shield:
+          break;
+      }
     }
   }
 
