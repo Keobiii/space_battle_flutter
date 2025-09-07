@@ -47,7 +47,7 @@ class Laser extends SpriteComponent with HasGameReference<MyGame>, CollisionCall
 
     if(other is Asteriod) {
       removeFromParent();
-      other.removeFromParent();
+      other.takeDamage();
     }
   }
 }

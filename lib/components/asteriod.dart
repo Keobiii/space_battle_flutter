@@ -10,6 +10,8 @@ class Asteriod extends SpriteComponent with HasGameReference<MyGame> {
   static const double _maxSize = 120;
   late Vector2 _velocity;
   late double _spinSpeed;
+  final double _maxHalth = 3;
+  late double _health;
 
   Asteriod({ 
     required super.position,
@@ -21,6 +23,7 @@ class Asteriod extends SpriteComponent with HasGameReference<MyGame> {
   ) {
     _velocity = _generateVelocity();
     _spinSpeed = (_random.nextDouble() * 1.5 - 0.75); 
+    _health = size / _maxSize * _maxHalth;
 
     add(CircleHitbox());
   }
@@ -66,6 +69,15 @@ class Asteriod extends SpriteComponent with HasGameReference<MyGame> {
       position.x = screenWidth + size.x / 2;
     } else if (position.x > screenWidth + size.x / 2) {
       position.x = -size.x / 2;
+    }
+  }
+
+  // dealing damage to the asteriod
+  void takeDamage() {
+    _health--;
+
+    if (_health <= 0) {
+      removeFromParent();
     }
   }
 }
