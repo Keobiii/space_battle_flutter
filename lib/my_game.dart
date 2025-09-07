@@ -3,6 +3,7 @@ import 'dart:math';
 import 'dart:ui';
 
 import 'package:flame/components.dart';
+import 'package:flame/effects.dart';
 import 'package:flame/events.dart';
 import 'package:flame/flame.dart';
 import 'package:flame/game.dart';
@@ -103,6 +104,7 @@ class MyGame extends FlameGame with HasKeyboardHandlerComponents, HasCollisionDe
 
     _scoreDisplay = TextComponent(
       text: '0',
+      anchor: Anchor.topCenter,
       position: Vector2(size.x / 2, 20),
       priority: 10,
       textRenderer: TextPaint(
@@ -122,5 +124,21 @@ class MyGame extends FlameGame with HasKeyboardHandlerComponents, HasCollisionDe
     );
 
     add(_scoreDisplay);
+  }
+
+  void incrementScore(int amount) {
+    _score += amount;
+    _scoreDisplay.text = _score.toString();
+
+    final ScaleEffect popEffect = ScaleEffect.to(
+      Vector2.all(1.2),
+      EffectController(
+        duration: 0.05,
+        alternate: true,
+        curve: Curves.easeInOut,
+      )
+    );
+
+    _scoreDisplay.add(popEffect);
   }
 }

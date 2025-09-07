@@ -83,10 +83,12 @@ class Asteriod extends SpriteComponent with HasGameReference<MyGame> {
     _health--;
 
     if (_health <= 0) {
+      game.incrementScore(2);
       removeFromParent();
       _createExplosion();
       _splitAsteriod();
     } else {
+      game.incrementScore(1);
       _flashWhite();
       _applyKnockback();
     }
