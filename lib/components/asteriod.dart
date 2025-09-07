@@ -31,7 +31,7 @@ class Asteriod extends SpriteComponent with HasGameReference<MyGame> {
     _spinSpeed = (_random.nextDouble() * 1.5 - 0.75); 
     _health = size / _maxSize * _maxHalth;
 
-    add(CircleHitbox());
+    add(CircleHitbox(collisionType: CollisionType.passive));
   }
 
   @override

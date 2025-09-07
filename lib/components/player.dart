@@ -7,6 +7,7 @@ import 'package:flame/effects.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:space_battle/components/asteriod.dart';
+import 'package:space_battle/components/bomb.dart';
 import 'package:space_battle/components/explosion.dart';
 import 'package:space_battle/components/laser.dart';
 import 'package:space_battle/components/pickup.dart';
@@ -231,6 +232,7 @@ class Player extends SpriteAnimationComponent with HasGameReference<MyGame>, Key
           _laserPowerupTimer.start();
           break;
         case PickupType.bomb:
+          game.add(Bomb(position: position.clone()));
           break;
         case PickupType.shield:
           if(activeShield != null) {
