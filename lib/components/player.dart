@@ -2,9 +2,12 @@ import 'dart:async';
 
 import 'package:flame/components.dart';
 import 'package:flutter/foundation.dart';
+import 'package:space_battle/components/laser.dart';
 import 'package:space_battle/my_game.dart';
 
 class Player extends SpriteComponent with HasGameReference<MyGame>{
+  bool _isShooting = false;
+
   @override
   FutureOr<void> onLoad() async{
     // TODO: implement onLoad
@@ -32,6 +35,12 @@ class Player extends SpriteComponent with HasGameReference<MyGame>{
 
     _handleScreenBounds();
 
+    // perform shooting if the player is shooting
+    if (_isShooting) {
+      _fireLaser();
+    
+    }
+
     super.update(dt);
   }
 
@@ -51,5 +60,22 @@ class Player extends SpriteComponent with HasGameReference<MyGame>{
     } else if(position.x > screenWidth) {
       position.x = 0;
     }
+  }
+
+  // a method to shoot laser
+  void startShooting() {
+    _isShooting = true;
+  }
+
+  void stopShooting() {
+    _isShooting = false;
+  } 
+
+  void _fireLaser() {
+    game.add(
+      Laser(
+        position: position.clone() + Vector2(0, -size.y / 2),
+      )
+    );
   }
 }
