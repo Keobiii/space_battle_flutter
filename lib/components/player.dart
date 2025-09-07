@@ -2,13 +2,15 @@ import 'dart:async';
 
 import 'package:flame/components.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:space_battle/components/laser.dart';
 import 'package:space_battle/my_game.dart';
 
-class Player extends SpriteComponent with HasGameReference<MyGame>{
+class Player extends SpriteComponent with HasGameReference<MyGame>, KeyboardHandler{
   bool _isShooting = false;
   final double _fireCooldown = 0.2;
   double _elapsedFireTime = 0.0;
+  final Vector2 _keyboardMovement = Vector2.zero();
 
   @override
   FutureOr<void> onLoad() async{
@@ -33,7 +35,11 @@ class Player extends SpriteComponent with HasGameReference<MyGame>{
     // print(game.joystick.relativeDelta);
 
     // set position of the player based on the joystick input
-    position += game.joystick.relativeDelta.normalized() * 200 * dt;
+    // position += game.joystick.relativeDelta.normalized() * 200 * dt;
+
+    // combine joystick and keyboard input
+    final Vector2 movement = game.joystick.relativeDelta + _keyboardMovement;
+    position += movement.normalized() * 200 * dt;
 
     _handleScreenBounds();
 
@@ -82,5 +88,20 @@ class Player extends SpriteComponent with HasGameReference<MyGame>{
         position: position.clone() + Vector2(0, -size.y / 2),
       )
     );
+  }
+
+  @override
+  bool onKeyEvent(KeyEvent event, Set<LogicalKeyboardKey> keysPressed) {
+    // TODO: implement onKeyEvent
+    _keyboardMovement.x = 0;
+    _keyboardMovement.x += keysPressed.contains(LogicalKeyboardKey.arrowLeft) ? -1 : 0;
+    _keyboardMovement.x += keysPressed.contains(LogicalKeyboardKey.arrowRight) ? 1 : 0;
+
+
+    _keyboardMovement.y = 0;
+    _keyboardMovement.y += keysPressed.contains(LogicalKeyboardKey.arrowUp) ? -1 : 0;
+    _keyboardMovement.y += keysPressed.contains(LogicalKeyboardKey.arrowDown) ? 1 : 0;
+
+    return true;
   }
 }

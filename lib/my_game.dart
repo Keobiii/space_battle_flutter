@@ -3,6 +3,7 @@ import 'dart:math';
 import 'dart:ui';
 
 import 'package:flame/components.dart';
+import 'package:flame/events.dart';
 import 'package:flame/flame.dart';
 import 'package:flame/game.dart';
 import 'package:flame/particles.dart';
@@ -10,7 +11,7 @@ import 'package:space_battle/components/asteriod.dart';
 import 'package:space_battle/components/player.dart';
 import 'package:space_battle/components/shoot_button.dart';
 
-class MyGame extends FlameGame {
+class MyGame extends FlameGame with HasKeyboardHandlerComponents{
   late Player player;
   late JoystickComponent joystick;
   late SpawnComponent _asteroidSpawner;
