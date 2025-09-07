@@ -29,6 +29,9 @@ class _TitleOverlayState extends State<TitleOverlay> {
 
   @override
   Widget build(BuildContext context) {
+    final String playerColor = 
+        widget.game.playerColors[widget.game.playerColorIndex];
+
     return AnimatedOpacity(
       onEnd: () {
         if (_opacity == 0.0) {
@@ -51,7 +54,14 @@ class _TitleOverlayState extends State<TitleOverlay> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 GestureDetector(
-                  onTap: (){},
+                  onTap: (){
+                    setState(() {
+                      widget.game.playerColorIndex--;
+                      if(widget.game.playerColorIndex < 0) {
+                          widget.game.playerColorIndex = widget.game.playerColors.length - 1;
+                        }
+                    });
+                  },
                   child: Transform.flip(
                     flipX: true,
                     child: SizedBox(
@@ -64,11 +74,19 @@ class _TitleOverlayState extends State<TitleOverlay> {
                   padding: const EdgeInsets.symmetric(horizontal: 30),
                   child: SizedBox(
                     width: 100,
-                    child: Image.asset('assets/images/player_blue_off.png'),
+                    child: Image.asset('assets/images/player_${playerColor}_off.png'),
                   ),
                 ),
                 GestureDetector(
-                  onTap: (){},
+                  onTap: (){
+                    setState(() {
+                      widget.game.playerColorIndex++;
+                      if(widget.game.playerColorIndex ==
+                        widget.game.playerColors.length) {
+                          widget.game.playerColorIndex = 0;
+                        }
+                    });
+                  },
                   child: SizedBox(
                     width: 30,
                     child: Image.asset('assets/images/arrow_button.png'),

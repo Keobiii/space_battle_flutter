@@ -24,6 +24,7 @@ class Player extends SpriteAnimationComponent with HasGameReference<MyGame>, Key
   late Timer _explosionTimer;
   late Timer _laserPowerupTimer;
   Shield? activeShield;
+  late String _color;
 
   Player() {
     _explosionTimer =Timer(
@@ -42,6 +43,8 @@ class Player extends SpriteAnimationComponent with HasGameReference<MyGame>, Key
   @override
   FutureOr<void> onLoad() async{
     // TODO: implement onLoad
+    _color = game.playerColors[game.playerColorIndex];
+
     // sprite = await game.loadSprite('player_blue_on0.png');
 
     animation = await _loadAnimation();
@@ -104,8 +107,8 @@ class Player extends SpriteAnimationComponent with HasGameReference<MyGame>, Key
   Future<SpriteAnimation> _loadAnimation() async {
     return SpriteAnimation.spriteList(
       [
-        await game.loadSprite('player_blue_on0.png'),
-        await game.loadSprite('player_blue_on1.png'),
+        await game.loadSprite('player_${_color}_on0.png'),
+        await game.loadSprite('player_${_color}_on1.png'),
       ],
       stepTime: 0.1,
       loop: true
@@ -166,7 +169,7 @@ class Player extends SpriteAnimationComponent with HasGameReference<MyGame>, Key
   void _handleDestruction() async {
     animation = SpriteAnimation.spriteList(
       [
-        await game.loadSprite('player_blue_off.png'),
+        await game.loadSprite('player_${_color}_off.png'),
       ], 
       stepTime: double.infinity
     );
